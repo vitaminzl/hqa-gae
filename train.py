@@ -161,7 +161,7 @@ if __name__ == "__main__":
     parser.add_argument("--task", type=str, default="nc", help="nc or lp, meaning node classification or link prediction")
     parser.add_argument("--device", type=str, default="gpu", required=False, help="device")
     parser.add_argument("--device_id", type=int, default=0, required=False, help="device_id")
-    parser.add_argument("--seed", type=int, default=2024, required=False, help="random seed")
+    parser.add_argument("--seed", type=int, default=2025, required=False, help="random seed")
     parser.add_argument("--num_runs", type=int, default=1, required=False, help="num runs")
     parser.add_argument("--using_cuml", action="store_true", help="using cuml or not")
 
