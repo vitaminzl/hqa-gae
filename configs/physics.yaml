@@ -30,7 +30,7 @@ lp:
     bn: True
   mlp:
     hidden_dim: 32
-    num_layers: 1
+    num_layers: 2
     dropout: 0.5
   q1_size: 64
   t0: 1.0
@@ -39,7 +39,7 @@ lp:
   lambda_: 2
   alpha: 1.
   vq_type: 2
-  batch_size: 128
+  batch_size: 64
   num_neighbors: [10, 10]
   max_steps: 4000
   num_workers: 8
