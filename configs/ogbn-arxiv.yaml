@@ -12,8 +12,6 @@ nc:
     num_layers: 3
     dropout: 0.
   q1_size: 2048
-  # t0: 0.1
-  # temp_decay: 0.9
   q2_size: 256
   lambda_: 3
   alpha: 1.
