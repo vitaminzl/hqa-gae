@@ -14,13 +14,12 @@ nc:
     num_layers: 1
     dropout: 0.5
   q1_size: 256
-  t0: 0.1
-  temp_decay: 0.9
+  temp_decay: 0.2
   q2_size: 32
-  lambda_: 1
   alpha: 1.
-  beta: 0.1
-  max_epochs: 500
+  beta: 1.
+  vq_type: 2
+  max_epochs: 100
 lp:
   gnn:
     node_encoder: gcn
@@ -30,7 +29,6 @@ lp:
     dropout: 0.2
     activation: elu
     bn: True
-    dec_heads: 1
   mlp:
     hidden_dim: 64
     num_layers: 2
@@ -39,9 +37,13 @@ lp:
   t0: 0.1
   temp_decay: 0.1
   q2_size: 16
-  lambda_: 1
   alpha: 1.
   beta: 0.1
   vq_type: 1
-  val_freq: 50
-  max_epochs: 500
+  val_freq: 20
+  max_epochs: 1000
+  patience: 20
+  optimizer:
+    lr: 0.01
+    type: adamw
+    weight_decay: 0.005

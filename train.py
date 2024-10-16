@@ -4,6 +4,7 @@ import warnings
 import pytorch_lightning as pl
 import torch.nn.functional as F
 import torch
+import numpy as np
 import os.path as osp
 import torch_geometric.transforms as T
 from torch_geometric.loader import DataLoader, NeighborLoader
@@ -50,7 +51,9 @@ def pretrain(train_dataset, config, device, log_name="logs", valid_dataset=None,
     vq_train_model = GAE(
     hqa, 
     all_edge_index=train_dataset[0].edge_index if config.get("num_neighbors") else None,
-    optim=config.optim)
+    optimizer=config.optimizer,
+    scheduler=config.scheduler,
+    )
     # split_edge=train_data.split_edge)
     vq_train_model.save_hyperparameters(config.to_dict())
     if args.task == "lp":
@@ -167,10 +170,10 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     device_id = args.device_id
-    config_df = get_default_config()
-    config = parse_yaml(osp.join(args.config, args.dataset + ".yaml"))
-    config = config.lp if args.task == "lp" else config.nc
-    config.update(config_df.to_dict())
+    config = get_default_config()
+    config_yml = parse_yaml(osp.join(args.config, args.dataset + ".yaml"))
+    config_yml = config_yml.lp if args.task == "lp" else config_yml.nc
+    config.update(config_yml.to_dict())
     config.update({"device": args.device})
     dataset_name = args.dataset
 
@@ -186,14 +189,15 @@ if __name__ == "__main__":
 
     for i in range(args.num_runs):
         pylogger.info(f" Num Runs {i+1}/{args.num_runs} for {args.dataset} ".center(100, "="))
-        all_results = main(config)
+        result = main(config)
+        all_results = {k: all_results.get(k, []) + v if isinstance(v, list) else [v] for k, v in result.items()}
 
 
-    # if args.task == "lp":
-    #     pylogger.info(f"All runs Link Prediction AUC: {np.mean(all_test_auc):.4f} +- {np.std(all_test_auc):.4f}")
-    #     pylogger.info(f"All runs Link Prediction AP: {np.mean(all_test_ap):.4f} +- {np.std(all_test_ap):.4f}")
-    # elif args.task == "nc":
-    #     # pylogger.info(f"All runs Linear Prob Test {criterion}: {np.mean(all_test_accs):.4f} +- {np.std(all_test_accs):.4f}")
-    #     pylogger.info(f"All runs SVM Test accs: {np.mean(all_svm_accs):.4f} +- {np.std(all_svm_accs):.4f}")
-    #     pylogger.info(f"All runs SVM Test Micro F1: {np.mean(all_svm_f1_mic):.4f} +- {np.std(all_svm_f1_mic):.4f}")
-    #     pylogger.info(f"All runs SVM Test Macro F1: {np.mean(all_svm_f1_mac):.4f} +- {np.std(all_svm_f1_mac):.4f}")
+    if args.task == "lp":
+        pylogger.info(f"{args.dataset}: All runs Link Prediction AUC: {np.mean(all_results['AUC']):.4f} +- {np.std(all_results['AUC']):.4f}")
+        pylogger.info(f"{args.dataset}: All runs Link Prediction AP: {np.mean(all_results['AP']):.4f} +- {np.std(all_results['AP']):.4f}")
+    elif args.task == "nc":
+        # pylogger.info(f"All runs Linear Prob Test {criterion}: {np.mean(all_test_accs):.4f} +- {np.std(all_test_accs):.4f}")
+        pylogger.info(f"{args.dataset}: All runs SVM Test accs: {np.mean(all_results['acc']):.4f} +- {np.std(all_results['acc']):.4f}")
+        pylogger.info(f"{args.dataset}: All runs SVM Test Micro F1: {np.mean(all_results['f1_mic']):.4f} +- {np.std(all_results['f1_mic']):.4f}")
+        pylogger.info(f"{args.dataset}: All runs SVM Test Macro F1: {np.mean(all_results['f1_mac']):.4f} +- {np.std(all_results['f1_mac']):.4f}")

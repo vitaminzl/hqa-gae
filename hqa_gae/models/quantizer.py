@@ -91,12 +91,12 @@ class BaseVectorQuantizer(nn.Module):
 class VectorQuantizer(BaseVectorQuantizer):
     # VQGAN originally use beta=1.0, never tried 0.25; SD seems using 0.25
     def __init__(
-        self, codebook_size, code_dim, distance_type="square", padding_idx=0, decay=0.99, eps=1e-5, 
+        self, codebook_size, code_dim, distance_type="cosine", padding_idx=0, decay=0.99, eps=1e-5, 
         prob_decay=False, t0=1.
     ):
         super().__init__(codebook_size=codebook_size, code_dim=code_dim, 
                          distance_type=distance_type, padding_idx=padding_idx,
-                         prob_decay=prob_decay, t0=t0, version=2)
+                         prob_decay=prob_decay, t0=t0, version=1)
         self.decay = decay
         self.eps = eps
 
@@ -186,10 +186,10 @@ class VectorQuantizer2(BaseVectorQuantizer):
     - code_dim : dimension of embedding
     """
 
-    def __init__(self, codebook_size, code_dim, distance_type="square", padding_idx=0, prob_decay=0, t0=1., **kwargs):
+    def __init__(self, codebook_size, code_dim, distance_type="cosine", padding_idx=0, prob_decay=0, t0=1., **kwargs):
         super().__init__(codebook_size=codebook_size, code_dim=code_dim, 
                          distance_type=distance_type, padding_idx=padding_idx,
-                         version=1, prob_decay=prob_decay, t0=t0)
+                         version=2, prob_decay=prob_decay, t0=t0)
         self.codebook = NormalEmbedding(self.codebook_size, self.code_dim,)
 
 

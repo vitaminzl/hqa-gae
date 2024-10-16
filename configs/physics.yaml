@@ -4,9 +4,9 @@ nc:
     hidden_dim: 256
     output_dim: 128
     num_layers: 2
-    dropout: 0.2
     activation: elu
     dropout: 0.2
+    concat: True
     bn: True
     dec_heads: 2
   mlp:
@@ -14,9 +14,7 @@ nc:
     num_layers: 2
     dropout: 0.5
   q1_size: 128
-  t0: 0.1
-  temp_decay: 0.9
-  q2_size: 64
+  q2_size: 64  
   lambda_: 2
   alpha: 1.
   beta: 0.01
@@ -30,18 +28,25 @@ lp:
     dropout: 0.2
     activation: elu
     bn: True
-    dec_heads: 4
   mlp:
     hidden_dim: 32
     num_layers: 1
     dropout: 0.5
   q1_size: 64
-  t0: 0.
+  t0: 1.0
   temp_decay: 0.1
   q2_size: 8
   lambda_: 2
   alpha: 1.
-  beta: 0.001
-  vq_type: 1
-  val_freq: 50
-  max_epochs: 500
+  vq_type: 2
+  batch_size: 128
+  num_neighbors: [10, 10]
+  max_steps: 4000
+  num_workers: 8
+  patience: 5
+  val_freq: 200
+  optimizer:
+    type: adamw
+    lr: 0.01
+    weight_decay: 0.005
+  scheduler: null

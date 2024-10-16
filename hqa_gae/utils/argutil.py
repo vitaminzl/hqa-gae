@@ -46,27 +46,25 @@ def parse_yaml(yaml_file, object_view=True):
 
 def get_default_config():
     return PowerDict({
-        "t0": 1.,
+        "t0": 0.1,
         "temp_decay": 0.,
         "lambda_": 2,
         "alpha": 1.,
-        "beta": 0.1,
+        "beta": 0.,
         "l2_norm": True,
         "num_neighbors": None,
         "batch_size": 1,
         "num_workers": 0,
         "vq_type": 1,
         "patience": 1000,
-        "optim": {
-            "optimizer": {
-                "type": "adam",
-                "lr": 0.01,
-                "weight_decay": 0.
-            },
-            "scheduler": {
-                "type": "cos",
-                "opt_restart": 1000,
-                "warmup": None
-            } 
-        }
+        "optimizer": {
+            "type": "adam",
+            "lr": 0.01,
+            "weight_decay": 5e-4
+        },
+        "scheduler": {
+            "type": "cos",
+            "opt_restart": 5000,
+            "warmup": None
+        } 
     })

@@ -41,6 +41,11 @@ def create_gae(config, dataset):
     
     dec = config.gnn.to_dict()
     dec.pop("output_dim")
+    if "concat" in dec:
+        dec.pop("concat")
+    if "dec_dropout" in dec:
+        dec["dropout"] = dec["dec_dropout"]
+
 
     node_decoder = GNN(
         input_dim=encoder.emb_dim if vq is None else vq.code_dim,

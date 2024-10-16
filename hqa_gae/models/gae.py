@@ -27,14 +27,13 @@ class BaseVAE(nn.Module):
 
 
 class GAE(pl.LightningModule):
-    def __init__(self, model: BaseVAE, optim: dict, optim_d=None, 
+    def __init__(self, model: BaseVAE, optimizer: dict, scheduler: dict, 
                  transductive=True, evaluator=None, split_edge=None,
                  all_edge_index=None):
         super().__init__()
         self.model = model
-        self.optim = optim
-        self.optim_d = optim_d
-
+        self.optimizer = optimizer
+        self.scheduler = scheduler
         self.transductive = transductive
         self.evaluator = evaluator
         self.automatic_optimization = True
@@ -83,8 +82,8 @@ class GAE(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer, scheduler = build_optimizer(
-            self.optim.optimizer,
-            self.optim.scheduler,
+            self.optimizer,
+            self.scheduler,
             self.model.parameters()
             )
         # print(scheduler is None)
