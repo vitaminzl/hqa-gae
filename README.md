@@ -2,6 +2,10 @@
 
 Implementation for HQA-GAE
 
+## More Visualization
+
+![](./visual_comparison.png)
+
 ## Link Prediction
 
 ```
